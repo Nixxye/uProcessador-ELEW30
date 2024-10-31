@@ -5,8 +5,8 @@ use ieee.numeric_std.all;
 
 entity halfAdder is 
     port (
-        a, b : in unsigned (7 downto 0);
-        sum : out std_logic_vector (7 downto 0);
+        a, b : in unsigned (15 downto 0);
+        sum : out unsigned (15 downto 0)
     );
 end entity;
 
