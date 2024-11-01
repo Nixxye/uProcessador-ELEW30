@@ -28,8 +28,8 @@ architecture a_tb of tb is
 						less => c);
 	process
    begin
-		in_a <= "0000000000000000";
-		in_b <= "0000000000000000";
+		in_a <= "0000000001011000";
+		in_b <= "0000111111000000";
 		in_op <= "0000";
 		wait for 50 ns;
 		wait;

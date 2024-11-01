@@ -1,16 +1,19 @@
 v 4
-file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "testbench/tb.vhd" "2a1c812238a0e9cfd3cbb685861900d0bb7ff7f3" "20241031213134.303":
-  entity tb at 1( 0) + 0 on 19;
-  architecture a_tb of tb at 8( 137) + 0 on 20;
-file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/bitShifter.vhd" "6e16a0745301d4e2ba55490d736e58860648d7c8" "20241031213134.212":
-  entity bitshifter at 1( 0) + 0 on 11;
-  architecture a_bitshifter of bitshifter at 13( 234) + 0 on 12;
-file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/halfAdder.vhd" "68b56bff0efc4d2012f149dc8d0346834a437709" "20241031213134.215":
-  entity halfadder at 2( 26) + 0 on 13;
-  architecture a_halfadder of halfadder at 13( 231) + 0 on 14;
-file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/halfSubtractor.vhd" "698972943925f86e2525f6f9117078f8169c98d0" "20241031213134.217":
-  entity halfsubtractor at 2( 26) + 0 on 15;
-  architecture a_halfsubtractor of halfsubtractor at 13( 236) + 0 on 16;
-file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/mux16.vhd" "5179dadb903f1485a2b7f0e8972703766bc35552" "20241031213134.219":
+file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "testbench/tb.vhd" "fba7be0a08899cb96ff91789b8b38b71b67f442d" "20241101194317.429":
+  entity tb at 1( 0) + 0 on 21;
+  architecture a_tb of tb at 8( 137) + 0 on 22;
+file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "ULA.vhd" "cb6f48e8516e47921e8df9af31f0415d0470dec1" "20241101194317.427":
+  entity ula at 1( 0) + 0 on 19;
+  architecture a_ula of ula at 14( 343) + 0 on 20;
+file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/mux16.vhd" "5229fba43802c9b7184f04d8a89ef9bd8ae92148" "20241101194317.425":
   entity mux16 at 1( 0) + 0 on 17;
-  architecture a_mux16 of mux16 at 13( 247) + 0 on 18;
+  architecture a_mux16 of mux16 at 13( 259) + 0 on 18;
+file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/halfSubtractor.vhd" "4adb5f8aa4b9b2b014d350bc37d150c22ff6409b" "20241101194317.422":
+  entity halfsubtractor at 2( 27) + 0 on 15;
+  architecture a_halfsubtractor of halfsubtractor at 13( 248) + 0 on 16;
+file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/halfAdder.vhd" "95b33416d214372f584efaa80664e3acb8db7e7e" "20241101194317.420":
+  entity halfadder at 2( 27) + 0 on 13;
+  architecture a_halfadder of halfadder at 13( 243) + 0 on 14;
+file "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/" "source/bitShifter.vhd" "0b8e7b0f3f37cc736aaefdfc8682c18b4c1d1d62" "20241101194317.418":
+  entity bitshifter at 1( 0) + 0 on 11;
+  architecture a_bitshifter of bitshifter at 13( 246) + 0 on 12;

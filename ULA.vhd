@@ -63,9 +63,9 @@ begin
 		b => dataInB,
 		sub => muxOp1
 	);
-	shifter : bitShifter port map (
-		a => dataInA,
-		left => '1',
-		shift => muxOp2
-	);
+	-- shifter : bitShifter port map (
+	-- 	a => dataInA,
+	-- 	left => '1',
+	-- 	shift => muxOp2
+	-- );
 end architecture;
