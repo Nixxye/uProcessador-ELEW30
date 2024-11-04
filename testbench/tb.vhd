@@ -8,10 +8,10 @@ end;
 architecture a_tb of tb is
    component ULA
 	port (
-        dataInA, dataInB : in unsigned(15 downto 0);
-        opSelect : in unsigned(3 downto 0); -- Modificar tamanho
-        dataOut : out unsigned(15 downto 0);
-        zero, bigger, less : out std_logic -- Flags
+      dataInA, dataInB : in unsigned(15 downto 0);
+      opSelect : in unsigned(3 downto 0); -- Modificar tamanho
+      dataOut : out unsigned(15 downto 0);
+      zero, bigger, carry : out std_logic -- Flags
     );
    end component;
    signal in_a,in_b, out_a: unsigned (15 downto 0);
@@ -25,11 +25,11 @@ architecture a_tb of tb is
 						dataOut => out_a,
 						zero => a,
 						bigger => b,
-						less => c);
+						carry => c);
 	process
    begin
-		in_a <= "0000000001011000";
-		in_b <= "0000111111000000";
+		in_a <= "1000000001011000";
+		in_b <= "1000111111000000";
 		in_op <= "0000";
 		wait for 50 ns;
 		wait;
