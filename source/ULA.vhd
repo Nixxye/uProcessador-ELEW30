@@ -28,7 +28,7 @@ architecture a_ULA of ULA is
 
     component mux16 is 
         port (
-            a, b, c : in unsigned (15 downto 0);
+            op0, op1, op2, op3 : in unsigned (15 downto 0);
             sel : in unsigned (3 downto 0);
             muxOut : out unsigned (15 downto 0)
         );
@@ -42,14 +42,28 @@ architecture a_ULA of ULA is
         );
     end component;
 	
-    signal muxOp0, muxOp1, muxOp2: unsigned (15 downto 0);
-    signal muxOut: unsigned (15 downto 0);
+    component bitwiseAnd is 
+    port (
+        a, b : in unsigned (15 downto 0);
+        result : out unsigned (15 downto 0)
+    );
+    end component;
+
+    component bitwiseOr is 
+    port (
+        a, b : in unsigned (15 downto 0);
+        result : out unsigned (15 downto 0)
+    );
+    end component;
+
+    signal muxOp0, muxOp1, muxOp2, muxOp3, muxOut: unsigned (15 downto 0);
 begin
 	-- Colocar nome certo do MUX da ULA
     mux : mux16 port map (
-        a => muxOp0,
-		b => muxOp1,
-		c => muxOp2,
+        op0 => muxOp0,
+		op1 => muxOp1,
+		op2 => muxOp2,
+        op3 => muxOp3,
 		sel => opSelect,
 		muxOut => muxOut
     );
@@ -63,6 +77,16 @@ begin
 		b => dataInB,
 		sub => muxOp1
 	);
+    andOp : bitwiseAnd port map (
+        a => dataInA,
+        b => dataInB,
+        result => muxOp2
+    );
+    orOp : bitwiseOr port map (
+        a => dataInA,
+        b => dataInB,
+        result => muxOp3
+    );
     dataOut <= muxOut;
     -- FLAGS
     z <= '1' when muxOut = 0 else '0';

@@ -32,11 +32,19 @@ architecture a_tb of tb is
    begin
 		in_a <= "0100111000100000";
 		in_b <= "0100111000100000";
-		in_op <= "0001";
+		in_op <= "0000";
 		wait for 50 ns;
       in_a <= "0100111000100000";
 		in_b <= "0100111000100000";
-		in_op <= "0000";
+		in_op <= "0001";
+		wait for 50 ns;
+      in_a <= "0100101000100000";
+		in_b <= "0100011010100000";
+		in_op <= "0010";
+		wait for 50 ns;
+      in_a <= "0100101000100000";
+		in_b <= "0100011010100000";
+		in_op <= "0011";
 		wait for 50 ns;
 		wait;
    end process;
