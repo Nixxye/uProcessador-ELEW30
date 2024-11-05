@@ -29,14 +29,22 @@ architecture a_main of main is
             r0Data, r1Data : out unsigned(15 downto 0)
         );
     end component;
+    -- MT FEIO DEIXAR O MESMO MUX???
+    component mux16 is 
+    port (
+        op0, op1, op2, op3 : in unsigned (15 downto 0);
+        sel : in unsigned (3 downto 0);
+        muxOut : out unsigned (15 downto 0)
+    );
+    end component;
 
-    signal r0Ula, r1Ula : unsigned(15 downto 0);
+    signal r0Ula, r1Ula, reg, ulaOut: unsigned(15 downto 0);
 begin
     ulat : ULA port map(
         dataInA => r0Ula,
         dataInB => r1Ula,
         opSelect => opSelect,
-        dataOut => result,
+        dataOut => ulaOut,
         z => z,
         n => n,
         v => v
@@ -46,11 +54,21 @@ begin
         clk => clk,
         rst => rst,
         wrEn => wrEn,
-        wrData => wrData,
+        wrData => reg,
         wrAddress => wrAddress,
         r0Address => r0,
         r1Address => r1,
         r0Data => r0Ula,
         r1Data => r1Ula
     );
+
+    regIn : mux16 port map(
+        op0 => ulaOut,
+        op1 => wrData,
+        op2 => "0000000000000000",
+        op3 => "0000000000000000",
+        sel => "0001",
+        muxOut => reg
+    );
+    result <= ulaOut;
 end architecture;
