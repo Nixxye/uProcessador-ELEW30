@@ -7,7 +7,7 @@ entity ULA is
         dataInA, dataInB : in unsigned(15 downto 0);
         opSelect : in unsigned(3 downto 0); -- Modificar tamanho
         dataOut : out unsigned(15 downto 0);
-        zero, bigger, carry : out std_logic -- Flags
+        z, n, v : out std_logic -- Flags
     );
 end entity;
 
@@ -15,8 +15,7 @@ architecture a_ULA of ULA is
     component halfAdder is 
         port (
             a, b : in unsigned (15 downto 0);
-            sum : out unsigned (15 downto 0);
-            carry : out std_logic
+            sum : out unsigned (15 downto 0)
         );
     end component;
 
@@ -44,6 +43,7 @@ architecture a_ULA of ULA is
     end component;
 	
     signal muxOp0, muxOp1, muxOp2: unsigned (15 downto 0);
+    signal muxOut: unsigned (15 downto 0);
 begin
 	-- Colocar nome certo do MUX da ULA
     mux : mux16 port map (
@@ -51,17 +51,22 @@ begin
 		b => muxOp1,
 		c => muxOp2,
 		sel => opSelect,
-		muxOut => dataOut
+		muxOut => muxOut
     );
 	adder : halfAdder port map (
 		a => dataInA,
 		b => dataInB,
-		sum => muxOp0,
-        carry => carry
-	);
+		sum => muxOp0
+    );
 	subtractor : halfSubtractor port map (
 		a => dataInA,
 		b => dataInB,
 		sub => muxOp1
 	);
+    dataOut <= muxOut;
+    -- FLAGS
+    z <= '1' when muxOut = 0 else '0';
+    n <= muxOut(15);
+    v <= (dataInA(15) and dataInB(15) and not muxOut(15))
+     or (not dataInA(15) and not dataInB(15) and muxOut(15));
 end architecture;

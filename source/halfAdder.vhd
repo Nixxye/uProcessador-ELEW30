@@ -6,17 +6,11 @@ use ieee.numeric_std.all;
 entity halfAdder is 
     port (
         a, b : in unsigned (15 downto 0);
-        sum : out unsigned (15 downto 0);
-        carry : out std_logic
+        sum : out unsigned (15 downto 0)
     );
 end entity;
 
 architecture a_halfAdder of halfAdder is
-    signal s, a1, b1 : unsigned (16 downto 0);
 begin
-    a1 <= a & "0";
-    b1 <= b & "0";
-    s <= a1 + b1;
-    sum <= s(15 downto 0);
-    carry <= s(16);
+    sum <= a + b;
 end architecture;

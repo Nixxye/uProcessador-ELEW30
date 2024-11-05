@@ -11,25 +11,31 @@ architecture a_tb of tb is
       dataInA, dataInB : in unsigned(15 downto 0);
       opSelect : in unsigned(3 downto 0); -- Modificar tamanho
       dataOut : out unsigned(15 downto 0);
-      zero, bigger, carry : out std_logic -- Flags
+      z, n, v : out std_logic -- Flags
     );
    end component;
    signal in_a,in_b, out_a: unsigned (15 downto 0);
    signal in_op : unsigned (3 downto 0);
-   signal a, b, c : std_logic;
+   signal z, n, v : std_logic;
    begin
    -- uut significa Unit Under Test
-   uut: ULA port map( dataInA  => in_a,
-                        dataInB  => in_b,
-                        opSelect => in_op,
-						dataOut => out_a,
-						zero => a,
-						bigger => b,
-						carry => c);
+   uut: ULA port map( 
+      dataInA  => in_a,
+      dataInB  => in_b,
+      opSelect => in_op,
+      dataOut => out_a,
+      z => z,
+      n => n,
+      v => v
+   );
 	process
    begin
-		in_a <= "1000000001011000";
-		in_b <= "1000111111000000";
+		in_a <= "0100111000100000";
+		in_b <= "0100111000100000";
+		in_op <= "0001";
+		wait for 50 ns;
+      in_a <= "0100111000100000";
+		in_b <= "0100111000100000";
 		in_op <= "0000";
 		wait for 50 ns;
 		wait;
