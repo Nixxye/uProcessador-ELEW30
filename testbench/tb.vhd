@@ -6,46 +6,79 @@ entity tb is
 end;
 
 architecture a_tb of tb is
-   component ULA
-	port (
-      dataInA, dataInB : in unsigned(15 downto 0);
-      opSelect : in unsigned(3 downto 0); -- Modificar tamanho
-      dataOut : out unsigned(15 downto 0);
-      z, n, v : out std_logic -- Flags
-    );
-   end component;
-   signal in_a,in_b, out_a: unsigned (15 downto 0);
-   signal in_op : unsigned (3 downto 0);
-   signal z, n, v : std_logic;
-   begin
-   -- uut significa Unit Under Test
-   uut: ULA port map( 
-      dataInA  => in_a,
-      dataInB  => in_b,
-      opSelect => in_op,
-      dataOut => out_a,
-      z => z,
-      n => n,
-      v => v
+   component main 
+   port(
+        clk, rst, wrEn : in std_logic;
+        opSelect : in unsigned(3 downto 0);
+        r0, r1, wrAddress, wrData : in unsigned(15 downto 0);
+        z, n, v : out std_logic;
+        result : out unsigned(15 downto 0)
    );
-	process
-   begin
-		in_a <= "0100111000100000";
-		in_b <= "0100111000100000";
-		in_op <= "0000";
-		wait for 50 ns;
-      in_a <= "0100111000100000";
-		in_b <= "0100111000100000";
-		in_op <= "0001";
-		wait for 50 ns;
-      in_a <= "0100101000100000";
-		in_b <= "0100011010100000";
-		in_op <= "0010";
-		wait for 50 ns;
-      in_a <= "0100101000100000";
-		in_b <= "0100011010100000";
-		in_op <= "0011";
-		wait for 50 ns;
-		wait;
-   end process;
+   end component;
+   signal wrAddress, wrData, r0, r1, out_a: unsigned (15 downto 0);
+   signal inOp : unsigned (3 downto 0);
+   signal z, n, v, clk, rst, wrEn : std_logic;
+
+   constant periodTime : time := 50 ns;
+   signal finished : std_logic := '0';
+begin
+   uut: main port map( 
+        clk => clk,
+        rst => rst,
+        wrEn => wrEn,
+        opSelect => inOp,
+        r0 => r0,
+        r1 => r1,
+        wrData => wrData,
+        wrAddress => wrAddress,
+        z => z,
+        n => n,
+        v => v,
+        result => out_a
+    );
+    resetGlobal : process
+    begin
+        rst <= '1';
+        wait for periodTime * 2;
+        rst <= '0';
+        wait;
+    end process;
+
+    simTimeProc : process
+    begin
+        wait for 10 us;
+        finished <= '1';
+        wait;
+    end process simTimeProc;
+
+    clkProc : process
+    begin
+        while finished /= '1' loop
+            clk <= '0';
+            wait for periodTime / 2;
+            clk <= '1';
+            wait for periodTime / 2;
+        end loop;
+        wait;
+    end process clkProc;
+
+    process 
+    begin
+        wait for periodTime * 2;
+        wrEn <= '1';
+        wrAddress <= "0000000000000001";
+        wrData <= "0000000010010001";
+        wait for periodTime;
+        wrAddress <= "0000000000000010";
+        wrData <= "0000000010010001";
+        wait for periodTime;
+        wrEn <= '0';
+        inOp <= "0000";
+        r0 <= "0000000000000001";
+        r1 <= "0000000000000010";
+        wait for periodTime;
+        inOp <= "0001";
+        wait for periodTime;
+        wait;
+    end process;
 end architecture;
