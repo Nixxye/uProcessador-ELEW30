@@ -1,5 +1,7 @@
 # vhdl files
-FILES = source/*
+# Substituir por 
+# FILES = source/*.vhd source/*/*.vhd
+FILES = $(shell find source -type f -name "*.vhd")
 
 # testbench
 TESTBENCHPATH = testbench/${TESTBENCHFILE}*
