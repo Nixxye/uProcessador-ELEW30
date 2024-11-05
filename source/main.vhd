@@ -8,7 +8,8 @@ entity main is
         opSelect : in unsigned(3 downto 0);
         r0, r1, wrAddress, wrData : in unsigned(15 downto 0);
         z, n, v : out std_logic;
-        result : out unsigned(15 downto 0)
+        result : out unsigned(15 downto 0);
+        romOut : out unsigned(18 downto 0)
     );
 end entity;
 
@@ -38,7 +39,21 @@ architecture a_main of main is
     );
     end component;
 
-    signal r0Ula, r1Ula, reg, ulaOut: unsigned(15 downto 0);
+    component ROM is
+    port (
+        clk : in std_logic;
+        address : in unsigned(15 downto 0);
+        data : out unsigned(18 downto 0) -- Instruções de 19 bits
+    );
+    end component;
+
+    component controlUnit is
+        port (
+            clk, rst : in std_logic;
+            PC : out unsigned(15 downto 0)
+        );
+    end component;
+    signal r0Ula, r1Ula, reg, ulaOut, romIn: unsigned(15 downto 0);
 begin
     ulat : ULA port map(
         dataInA => r0Ula,
@@ -69,6 +84,18 @@ begin
         op3 => "0000000000000000",
         sel => "0001",
         muxOut => reg
+    );
+
+    romMem : ROM port map(
+        clk => clk,
+        address => romIn,
+        data => romOut
+    );
+    -- kk
+    cU : controlUnit port map(
+        clk => clk,
+        rst => rst,
+        PC => romIn
     );
     result <= ulaOut;
 end architecture;
