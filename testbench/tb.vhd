@@ -108,5 +108,6 @@ architecture a_tb of tb is
 		in_op <= "0011";
 		wait for 10 ns;
 		wait;
+		
    end process;
 end architecture;
