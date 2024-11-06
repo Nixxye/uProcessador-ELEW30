@@ -88,9 +88,20 @@ begin
         result => muxOp3
     );
     dataOut <= muxOut;
-    -- FLAGS
-    z <= '1' when muxOut = 0 else '0';
+    
+        -- FLAGS
+
+    -- resultado = 0: BLE vai subtrarir os 2 e ver se da 0 (iguais)
+    z <= '1' when muxOut = 0 else
+    '0';
+
+    -- resultado negativo
     n <= muxOut(15);
-    v <= (dataInA(15) and dataInB(15) and not muxOut(15))
-     or (not dataInA(15) and not dataInB(15) and muxOut(15));
+ 
+    -- overflow
+    v <= (dataInA(15) and dataInB(15) and (not muxOut(15))) -- soma de positivos da neg 
+     or ((not dataInA(15)) and (not dataInB(15)) and muxOut(15)) -- soma de negativos da pos 
+     or 
+     ((not dataInA(15)) and dataInB(15) and muxOut(15)) -- neg - pos da pos
+     or (dataInA(15) and (not dataInB(15)) and (not muxOut(15))); -- pos - neg da neg
 end architecture;
