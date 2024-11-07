@@ -5,7 +5,8 @@ use ieee.numeric_std.all;
 entity controlUnit is
     port (
         clk, rst : in std_logic;
-        PC : out unsigned(15 downto 0)
+        PC : out unsigned(15 downto 0);
+        jmpEn : out std_logic
     );
 end entity;
 
@@ -17,7 +18,17 @@ architecture a_controlUnit of controlUnit is
             dataOut : out unsigned(15 downto 0)
         );
     end component;
+
+    component stateMachine is
+        port(
+            clk, rst : in std_logic;
+            state : out std_logic
+        );
+    end component;
+
     signal pcAddress, pcSource : unsigned(15 downto 0);
+    signal opcode : unsigned(3 downto 0);
+    signal state : std_logic;
 begin
     pcComp : reg16 port map(
         clk => clk, 
@@ -26,13 +37,18 @@ begin
         dataIn => pcSource,
         dataOut => pcAddress
     );
+
+    sM : stateMachine port map(
+        clk => clk,
+        rst => rst,
+        state => state
+    );
     PC <= pcAddress;
-    process(clk)
-    begin
-        if rst = '1' then
-            pcSource <= (others => '0');
-        elsif rising_edge(clk) then
-            pcSource <= pcAddress + 1;
-        end if;
-    end process;
+    -- COLOCAR UM SOMADOR OU APENAS DEIXAR + 1???
+    pcSource <= (others => '0') when rst = '1' else 
+                pcAddress + 1 when state = '1' else
+                pcAddress;
+    -- DECODE:
+    opcode <= pc
+    -- ROM DENTRO DO CONTROL UNIT???
 end architecture;

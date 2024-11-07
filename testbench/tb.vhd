@@ -12,11 +12,11 @@ architecture a_tb of tb is
         opSelect : in unsigned(3 downto 0);
         r0, r1, wrAddress, wrData : in unsigned(15 downto 0);
         z, n, v : out std_logic;
-        result : out unsigned(15 downto 0);
+        result, PC : out unsigned(15 downto 0);
         romOut : out unsigned(18 downto 0)
    );
    end component;
-   signal wrAddress, wrData, r0, r1, out_a : unsigned (15 downto 0);
+   signal wrAddress, wrData, r0, r1, out_a, pc : unsigned (15 downto 0);
    signal rom : unsigned (18 downto 0);
    signal inOp : unsigned (3 downto 0);
    signal z, n, v, clk, rst, wrEn : std_logic;
@@ -37,7 +37,8 @@ begin
         n => n,
         v => v,
         result => out_a,
-        romOut => rom
+        romOut => rom,
+        PC => pc
     );
     resetGlobal : process
     begin

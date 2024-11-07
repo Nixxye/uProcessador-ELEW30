@@ -8,7 +8,7 @@ entity main is
         opSelect : in unsigned(3 downto 0);
         r0, r1, wrAddress, wrData : in unsigned(15 downto 0);
         z, n, v : out std_logic;
-        result : out unsigned(15 downto 0);
+        result, PC : out unsigned(15 downto 0);
         romOut : out unsigned(18 downto 0)
     );
 end entity;
@@ -98,4 +98,5 @@ begin
         PC => romIn
     );
     result <= ulaOut;
+    PC <= romIn;
 end architecture;
