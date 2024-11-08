@@ -12,7 +12,7 @@ architecture a_tb of tb is
         opSelect : out unsigned(3 downto 0);
         wrAddress : in unsigned(2 downto 0);
         wrData : in unsigned(15 downto 0);
-        z, n, v : out std_logic;
+        z, n, v, opException : out std_logic;
         result, PC : out unsigned(15 downto 0);
         romOut : out unsigned(18 downto 0)
     );
@@ -21,7 +21,7 @@ architecture a_tb of tb is
    signal rom : unsigned (18 downto 0);
    signal inOp : unsigned (3 downto 0);
    signal wrAddress : unsigned (2 downto 0);
-   signal z, n, v, clk, rst, wrEn : std_logic;
+   signal z, n, v, clk, rst, wrEn, excp : std_logic;
 
    constant periodTime : time := 50 ns;
    signal finished : std_logic := '0';
@@ -38,7 +38,8 @@ begin
         v => v,
         result => out_a,
         romOut => rom,
-        PC => pc
+        PC => pc,
+        opException => excp
     );
     resetGlobal : process
     begin

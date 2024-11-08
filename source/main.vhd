@@ -8,7 +8,7 @@ entity main is
         opSelect : out unsigned(3 downto 0);
         wrAddress : in unsigned(2 downto 0);
         wrData : in unsigned(15 downto 0);
-        z, n, v : out std_logic;
+        z, n, v, opException : out std_logic;
         result, PC : out unsigned(15 downto 0);
         romOut : out unsigned(18 downto 0)
     );
@@ -56,11 +56,11 @@ architecture a_main of main is
             pcWrtEn, ulaSrcA: out std_logic;
             ulaOp : out unsigned(3 downto 0); 
             ulaSrcB : out unsigned(1 downto 0);
-            jmpEn : out std_logic
+            jmpEn, opException : out std_logic
         );
     end component;
     signal ulaA, ulaB, r0Ula, r1Ula, reg, ulaOut, romIn, pcIn, pcOut: unsigned(15 downto 0);
-    signal pcWrtEn, sUlaA, jmp : std_logic;
+    signal pcWrtEn, sUlaA, jmp, excp : std_logic;
     signal sUlaB : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
     signal instruction : unsigned(18 downto 0);
@@ -99,7 +99,8 @@ begin
         ulaSrcA => sUlaA,
         ulaSrcB => sUlaB,
         ulaOp => ulaOp,
-        jmpEn => jmp
+        jmpEn => jmp,
+        opException => excp
     );
     pcReg : reg16 port map(
         clk => clk,
@@ -123,4 +124,5 @@ begin
     PC <= pcOut;
     opSelect <= ulaOp;
     romOut <= instruction;
+    opException <= excp;
 end architecture;

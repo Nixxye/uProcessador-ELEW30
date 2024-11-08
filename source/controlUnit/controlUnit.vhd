@@ -9,7 +9,7 @@ entity controlUnit is
         pcWrtEn, ulaSrcA: out std_logic;
         ulaOp : out unsigned(3 downto 0); 
         ulaSrcB : out unsigned(1 downto 0);
-        jmpEn : out std_logic
+        jmpEn, opException : out std_logic
     );
 end entity;
 
@@ -23,7 +23,7 @@ architecture a_controlUnit of controlUnit is
 
     signal opcode : unsigned(3 downto 0);
     signal func : unsigned(2 downto 0);
-    signal state, jmp : std_logic;
+    signal state, jmp, excp : std_logic;
 begin
     sM : stateMachine port map(
         clk => clk,
@@ -41,12 +41,17 @@ begin
         "00" when state = '0' else
         "01";
         
-    pcWrtEn <= '1' when state = '1' else '0';
+    pcWrtEn <= '1' when state = '1' and excp = '0' else '0';
 
     -- DECODE:
     opcode <= instruction (6 downto 3);
     func <= instruction (2 downto 0);
+    -- INSTRUÇÕES PERMITIDAS
+    excp <= '0' when opcode = "0000" and func = "000" else --nop
+        '0' when opcode = "0001" and func = "000" -- jmp
+        else '1';
 
     jmp <= '1' when opcode = "0001" and func = "000" else '0';
     jmpEn <= jmp;
+    opException <= excp;
 end architecture;
