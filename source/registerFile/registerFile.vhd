@@ -5,7 +5,8 @@ use ieee.numeric_std.all;
 entity registerFile is 
     port(
         clk, rst, wrEn : in std_logic;
-        wrData, wrAddress, r0Address, r1Address: in unsigned(15 downto 0);
+        wrAddress, r0Address, r1Address : in unsigned(2 downto 0);
+        wrData: in unsigned(15 downto 0);
         r0Data, r1Data : out unsigned(15 downto 0)
     );
 end entity;

@@ -9,16 +9,18 @@ architecture a_tb of tb is
    component main 
    port(
         clk, rst, wrEn : in std_logic;
-        opSelect : in unsigned(3 downto 0);
-        r0, r1, wrAddress, wrData : in unsigned(15 downto 0);
+        opSelect : out unsigned(3 downto 0);
+        wrAddress : in unsigned(2 downto 0);
+        wrData : in unsigned(15 downto 0);
         z, n, v : out std_logic;
         result, PC : out unsigned(15 downto 0);
         romOut : out unsigned(18 downto 0)
-   );
+    );
    end component;
-   signal wrAddress, wrData, r0, r1, out_a, pc : unsigned (15 downto 0);
+   signal wrData, out_a, pc : unsigned (15 downto 0);
    signal rom : unsigned (18 downto 0);
    signal inOp : unsigned (3 downto 0);
+   signal wrAddress : unsigned (2 downto 0);
    signal z, n, v, clk, rst, wrEn : std_logic;
 
    constant periodTime : time := 50 ns;
@@ -29,8 +31,6 @@ begin
         rst => rst,
         wrEn => wrEn,
         opSelect => inOp,
-        r0 => r0,
-        r1 => r1,
         wrData => wrData,
         wrAddress => wrAddress,
         z => z,
@@ -68,21 +68,7 @@ begin
 
     process 
     begin
-        wait for periodTime * 2;
-        wrEn <= '1';
-        wrAddress <= "0000000000000001";
-        wrData <= "0000000010010001";
-        wait for periodTime;
-        wrAddress <= "0000000000000010";
-        wrData <= "0000000010010001";
-        wait for periodTime;
-        wrEn <= '0';
-        inOp <= "0000";
-        r0 <= "0000000000000001";
-        r1 <= "0000000000000010";
-        wait for periodTime;
-        inOp <= "0001";
-        wait for periodTime;
+        wait for periodTime * 10;
         wait;
     end process;
 end architecture;

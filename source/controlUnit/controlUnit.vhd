@@ -5,20 +5,15 @@ use ieee.numeric_std.all;
 entity controlUnit is
     port (
         clk, rst : in std_logic;
-        PC : out unsigned(15 downto 0);
+        instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
+        pcWrtEn, ulaSrcA: out std_logic;
+        ulaOp : out unsigned(3 downto 0); 
+        ulaSrcB : out unsigned(1 downto 0);
         jmpEn : out std_logic
     );
 end entity;
 
 architecture a_controlUnit of controlUnit is
-    component reg16 is
-        port(
-            clk, rst, wrEn : in std_logic;
-            dataIn : in unsigned(15 downto 0);
-            dataOut : out unsigned(15 downto 0)
-        );
-    end component;
-
     component stateMachine is
         port(
             clk, rst : in std_logic;
@@ -26,29 +21,32 @@ architecture a_controlUnit of controlUnit is
         );
     end component;
 
-    signal pcAddress, pcSource : unsigned(15 downto 0);
     signal opcode : unsigned(3 downto 0);
-    signal state : std_logic;
+    signal func : unsigned(2 downto 0);
+    signal state, jmp : std_logic;
 begin
-    pcComp : reg16 port map(
-        clk => clk, 
-        rst => rst, 
-        wrEn => '1', 
-        dataIn => pcSource,
-        dataOut => pcAddress
-    );
-
     sM : stateMachine port map(
         clk => clk,
         rst => rst,
         state => state
     );
-    PC <= pcAddress;
-    -- COLOCAR UM SOMADOR OU APENAS DEIXAR + 1???
-    pcSource <= (others => '0') when rst = '1' else 
-                pcAddress + 1 when state = '1' else
-                pcAddress;
+    ulaOp <= "0000" when state = '1' or jmp = '1' else 
+        (others => '0');
+    ulaSrcA <= '1' when state = '0' or jmp = '1' else
+        '0' when state = '1' else
+        '0';
+    -- ARRUMAR CONSTANTE AQUI:
+    ulaSrcB <= "10" when jmp = '1' else
+        "01" when state = '1' else
+        "00" when state = '0' else
+        "01";
+        
+    pcWrtEn <= '1' when state = '1' else '0';
+
     -- DECODE:
-    opcode <= pc
-    -- ROM DENTRO DO CONTROL UNIT???
+    opcode <= instruction (6 downto 3);
+    func <= instruction (2 downto 0);
+
+    jmp <= '1' when opcode = "0001" and func = "000" else '0';
+    jmpEn <= jmp;
 end architecture;
