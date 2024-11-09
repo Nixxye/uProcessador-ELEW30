@@ -122,7 +122,6 @@ begin
     ulaA <= pcOut when sUlaA = '0' else
             r0Ula when sUlaA = '1' else
             (others => '0');
-    -- AQUI VAI A CONSTANTE IMEDIATA
     ulaB <= r1Ula when sUlaB = "00" else
         "0000000000000001" when sUlaB = "01" else
         "000000" & instruction(9 downto 0) when sUlaB = "10" else
