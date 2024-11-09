@@ -8,10 +8,8 @@ end;
 architecture a_tb of tb is
    component main 
    port(
-        clk, rst, wrEn : in std_logic;
+        clk, rst: in std_logic;
         opSelect : out unsigned(3 downto 0);
-        wrAddress : in unsigned(2 downto 0);
-        wrData : in unsigned(15 downto 0);
         z, n, v, opException : out std_logic;
         result, PC : out unsigned(15 downto 0);
         romOut : out unsigned(18 downto 0)
@@ -29,10 +27,7 @@ begin
    uut: main port map( 
         clk => clk,
         rst => rst,
-        wrEn => wrEn,
         opSelect => inOp,
-        wrData => wrData,
-        wrAddress => wrAddress,
         z => z,
         n => n,
         v => v,
