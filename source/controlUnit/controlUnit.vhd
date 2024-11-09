@@ -31,7 +31,9 @@ begin
     );
     -- Coloca o registrador ZERO na ULA para ter mais bits para a constante do jump:
     -- Usado também para quando é necessário somar com zero (apenas passar a constante pela ULA):
-    zeroReg <= '1' when state = "010" and instrJ = '1' else '0';
+    zeroReg <= '1' when state = "010" and instrJ = '1' else  -- jump
+        '1' when state = "010" and instrI = '1' and func = "000" else -- ld
+        '0';
 
     ulaOp <= "0000" when state = "000" else 
         "0000" when state = "001" else
@@ -51,7 +53,7 @@ begin
         "10" when state = "001" else
         "11" when state = "010" and instrJ = '1' else
         "00" when state = "010" and instrR = '1' else
-        "00" when state = "010" and instrI = '1' else
+        "10" when state = "010" and instrI = '1' else
         "00";
         
     pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
@@ -61,7 +63,9 @@ begin
         '0';
     
     memtoReg <= '1' when instrR = '1' and state = "011" else
-        '1' when instrI = '1' and state = "011" else '0';
+        '1' when instrI = '1' and func = "001" and state = "011" else --ld
+        '0' when instrI = '1' and func = "000" and state = "011" else --addi
+        '0';
     regWrt <= '1' when instrR = '1' and state = "011" else
         '1' when instrI = '1' and state = "011" else '0';
     -- DECODE:
@@ -72,6 +76,7 @@ begin
         '0' when instrJ = '1' and func = "000" else -- jmp
         '0' when instrR = '1' and func = "000" else -- add
         '0' when instrR = '1' and func = "001" else -- sub
+        '0' when instrI = '1' and func = "000" else -- addi
         '0' when instrI = '1' and func = "001" else -- ld
         '1';
     -- RESETA A MÁQUINA DE ESTADOS EM DIFERENTES POSIÇÕES DEPENDENDO DO OPCODE

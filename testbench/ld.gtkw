@@ -1,22 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Sat Nov  9 17:56:40 2024
+[*] Sat Nov  9 18:42:35 2024
 [*]
 [dumpfile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/work/tb.vcd"
-[dumpfile_mtime] "Sat Nov  9 17:54:38 2024"
-[dumpfile_size] 43289
+[dumpfile_mtime] "Sat Nov  9 18:36:44 2024"
+[dumpfile_size] 49549
 [savefile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/testbench/ld.gtkw"
 [timestart] 0
-[size] 1000 600
-[pos] -1 -1
-*-29.255806 211000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 2548 987
+[pos] -1006 -98
+*-27.525793 1025000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.cu.
 [sst_width] 214
 [signals_width] 212
 [sst_expanded] 1
-[sst_vpaned_height] 151
+[sst_vpaned_height] 547
 @28
 tb.clk
 @22
@@ -29,5 +29,17 @@ tb.uut.regfile.rs1[15:0]
 tb.uut.regfile.rs2[15:0]
 tb.uut.regfile.rs3[15:0]
 tb.uut.regfile.rs4[15:0]
+@28
+tb.uut.regfile.wren
+tb.uut.cu.regwrt
+@24
+tb.uut.pcreg.datain[15:0]
+tb.uut.sulab[1:0]
+tb.uut.sulaa
+tb.uut.ulaop[3:0]
+tb.uut.ulaa[15:0]
+tb.uut.ulab[15:0]
+tb.uut.ulaout[15:0]
+tb.uut.ularesult[15:0]
 [pattern_trace] 1
 [pattern_trace] 0

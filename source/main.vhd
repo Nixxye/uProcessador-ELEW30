@@ -59,7 +59,7 @@ architecture a_main of main is
         );
     end component;
     signal ulaA, ulaB, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut: unsigned(15 downto 0);
-    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, RegWrt, rstPc : std_logic;
+    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, regWrt, rstPc : std_logic;
     signal sUlaB : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
     signal r0Address, wrAddress : unsigned(2 downto 0);
@@ -77,7 +77,7 @@ begin
     regFile : registerFile port map(
         clk => clk,
         rst => rst,
-        wrEn => RegWrt,
+        wrEn => regWrt,
         wrData => wrtData,
         wrAddress => wrAddress,
         r0Address => instruction(11 downto 9),
@@ -128,7 +128,7 @@ begin
             (others => '0');
     ulaB <= r1Ula when sUlaB = "00" else
         "0000000000000001" when sUlaB = "01" else
-        "000000" & instruction(9 downto 0) when sUlaB = "10" else
+        "0000000" & instruction(8 downto 0) when sUlaB = "10" else
         "0000" & instruction(11 downto 0) when sUlaB = "11" else -- Apenas para Jump
         (others => '0');
     pcIn <= ulaResult when pcSource = '0' else
