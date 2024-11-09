@@ -6,10 +6,10 @@ entity controlUnit is
     port (
         clk, rst : in std_logic;
         instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-        pcWrtEn, ulaSrcA: out std_logic;
+        pcWrtEn, pcWrtCnd, ulaSrcA: out std_logic;
         ulaOp : out unsigned(3 downto 0); 
         ulaSrcB : out unsigned(1 downto 0);
-        jmpEn, opException : out std_logic
+        pcSource, opException : out std_logic
     );
 end entity;
 
@@ -17,32 +17,37 @@ architecture a_controlUnit of controlUnit is
     component stateMachine is
         port(
             clk, rst : in std_logic;
-            state : out std_logic
+            state : out unsigned(2 downto 0)
         );
     end component;
 
     signal opcode : unsigned(3 downto 0);
-    signal func : unsigned(2 downto 0);
-    signal state, jmp, excp : std_logic;
+    signal func, state : unsigned(2 downto 0);
+    signal jmp, excp, stRst : std_logic;
 begin
     sM : stateMachine port map(
         clk => clk,
-        rst => rst,
+        rst => stRst,
         state => state
     );
-    ulaOp <= "0000" when state = '1' or jmp = '1' else 
+    ulaOp <= "0000" when state = "000" else 
+        "0000" when state = "001" else
         (others => '0');
-    ulaSrcA <= '1' when state = '0' or jmp = '1' else
-        '0' when state = '1' else
+    ulaSrcA <= '0' when state = "000" else
+        '0' when state = "001" else
+        '1' when state = "010" else
         '0';
     -- ARRUMAR CONSTANTE AQUI:
-    ulaSrcB <= "10" when jmp = '1' else
-        "01" when state = '1' else
-        "00" when state = '0' else
-        "01";
+    ulaSrcB <= "01" when state = "000" else
+        "10" when state = "001" else
+        "10" when state = "010" and jmp = '1' else
+        "00";
         
-    pcWrtEn <= '1' when state = '1' and excp = '0' else '0';
-
+    pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
+    pcWrtCnd <= '1' when state = "010" and jmp = '1' else '0';
+    pcSource <= '0' when state = "000" else
+        '0' when state = "010" and jmp = '1' else -- Olhar para o opcode dps
+        '0';
     -- DECODE:
     opcode <= instruction (6 downto 3);
     func <= instruction (2 downto 0);
@@ -50,8 +55,11 @@ begin
     excp <= '0' when opcode = "0000" and func = "000" else --nop
         '0' when opcode = "0001" and func = "000" -- jmp
         else '1';
-
+    -- RESETA A MÁQUINA DE ESTADOS EM DIFERENTES POSIÇÕES DEPENDENDO DO OPCODE
+    stRst <= '1' when rst = '1' else
+            '1' when opcode = "0001" and state = "010" else
+            '0';
     jmp <= '1' when opcode = "0001" and func = "000" else '0';
-    jmpEn <= jmp;
+
     opException <= excp;
 end architecture;

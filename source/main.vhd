@@ -53,14 +53,14 @@ architecture a_main of main is
         port (
             clk, rst : in std_logic;
             instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-            pcWrtEn, ulaSrcA: out std_logic;
+            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource: out std_logic;
             ulaOp : out unsigned(3 downto 0); 
             ulaSrcB : out unsigned(1 downto 0);
-            jmpEn, opException : out std_logic
+            opException : out std_logic
         );
     end component;
-    signal ulaA, ulaB, r0Ula, r1Ula, reg, ulaOut, romIn, pcIn, pcOut: unsigned(15 downto 0);
-    signal pcWrtEn, sUlaA, jmp, excp : std_logic;
+    signal ulaA, ulaB, r0Ula, r1Ula, reg, ulaOut, ulaResult, romIn, pcIn, pcOut: unsigned(15 downto 0);
+    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource : std_logic;
     signal sUlaB : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
     signal instruction : unsigned(18 downto 0);
@@ -69,7 +69,7 @@ begin
         dataInA => ulaA,
         dataInB => ulaB,
         opSelect => ulaOp,
-        dataOut => ulaOut,
+        dataOut => ulaResult,
         z => z,
         n => n,
         v => v
@@ -96,18 +96,26 @@ begin
         rst => rst,
         instruction => instruction(18 downto 12),
         pcWrtEn => pcWrtEn,
+        pcWrtCnd => pcWrtCnd,
+        pcSource => pcSource,
         ulaSrcA => sUlaA,
         ulaSrcB => sUlaB,
         ulaOp => ulaOp,
-        jmpEn => jmp,
         opException => excp
     );
     pcReg : reg16 port map(
         clk => clk,
         rst => rst,
-        wrEn => pcWrtEn,
-        dataIn => ulaOut,
+        wrEn => pcWrt,
+        dataIn => pcIn,
         dataOut => pcOut
+    );
+    Ula_Out : reg16 port map(
+        clk => clk,
+        rst => rst,
+        wrEn => '1',
+        dataIn => ulaResult,
+        dataOut => ulaOut
     );
     -- MUX
     reg <= wrData;
@@ -117,9 +125,13 @@ begin
     -- AQUI VAI A CONSTANTE IMEDIATA
     ulaB <= r1Ula when sUlaB = "00" else
         "0000000000000001" when sUlaB = "01" else
-        "000000" & instruction(9 downto 0) when jmp = '1' else
+        "000000" & instruction(9 downto 0) when sUlaB = "10" else
         (others => '0');
-
+    pcIn <= ulaResult when pcSource = '0' else
+            ulaOut when pcSource = '1' else
+            (others => '0');
+    -- ATUALIZAR qnd add BEQ
+    pcWrt <= pcWrtEn or pcWrtCnd;
     result <= ulaOut;
     PC <= pcOut;
     opSelect <= ulaOp;

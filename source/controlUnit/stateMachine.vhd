@@ -5,18 +5,22 @@ use ieee.numeric_std.all;
 entity stateMachine is
     port (
         clk, rst : in std_logic;
-        state : out std_logic
+        state : out unsigned(2 downto 0)
     );
 end entity;
 architecture a_stateMachine of stateMachine is
-    signal s : std_logic;
+    signal s : unsigned(2 downto 0);
 begin
     process(clk)
     begin
-        if rst = '1' then
-            s <= '0';
-        elsif rising_edge(clk) then
-            s <= not s;
+        if rising_edge(clk) then
+            if rst = '1' then
+                s <= "000";
+            elsif s = "100" then -- Maior estado é 4 (LW OU SW)
+                s <= "000";
+            else
+                s <= s + 1;
+            end if;
         end if;
     end process;
     state <= s;
