@@ -62,7 +62,7 @@ begin
         '0' when state = "010" and instrJ = '1' else -- Olhar para o opcode dps
         '0';
     
-    memtoReg <= '1' when instrR = '1' and state = "011" else
+    memtoReg <= '0' when instrR = '1' and state = "011" else
         '1' when instrI = '1' and func = "001" and state = "011" else --ld
         '0' when instrI = '1' and func = "000" and state = "011" else --addi
         '0';
