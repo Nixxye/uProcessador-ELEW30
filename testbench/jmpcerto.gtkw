@@ -1,0 +1,46 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Nov 10 13:22:36 2024
+[*]
+[dumpfile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/work/tb.vcd"
+[dumpfile_mtime] "Sun Nov 10 13:16:49 2024"
+[dumpfile_size] 61313
+[savefile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/testbench/jmpcerto.gtkw"
+[timestart] 0
+[size] 2548 987
+[pos] -54 -91
+*-27.842157 1375000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.uut.
+[sst_width] 214
+[signals_width] 204
+[sst_expanded] 1
+[sst_vpaned_height] 606
+@28
+tb.clk
+@24
+tb.pc[15:0]
+@28
+tb.uut.instruction[18:0]
+tb.uut.cu.state[2:0]
+@24
+tb.uut.regfile.rs0[15:0]
+tb.uut.regfile.rs1[15:0]
+tb.uut.regfile.rs2[15:0]
+tb.uut.regfile.rs3[15:0]
+tb.uut.regfile.rs4[15:0]
+@28
+tb.uut.cu.instri
+tb.uut.cu.instrj
+tb.uut.cu.instrr
+tb.uut.cu.func[2:0]
+@24
+tb.uut.ulaout[15:0]
+tb.uut.ularesult[15:0]
+@28
+tb.uut.cu.zeroreg
+@24
+tb.uut.ulaa[15:0]
+tb.uut.ulab[15:0]
+[pattern_trace] 1
+[pattern_trace] 0

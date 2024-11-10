@@ -33,6 +33,7 @@ begin
     -- Usado também para quando é necessário somar com zero (apenas passar a constante pela ULA):
     zeroReg <= '1' when state = "000" and instrJ = '1' else  -- jump
         '1' when state = "010" and instrI = '1' and func = "000" else -- ld
+        '1' when state = "010" and instrR = '1' and func = "010" else -- move
         '0';
 
     ulaOp <= "0000" when state = "000" else 
@@ -40,6 +41,7 @@ begin
         "0000" when state = "010" and instrJ = '1' else
         "0000" when state = "010" and instrR = '1' and func = "0000" else
         "0001" when state = "010" and instrR = '1' and func = "0001" else
+        "0000" when state = "010" and instrR = '1' and func = "0010" else
         "0000" when state = "010" and instrI = '1' and func = "0000" else
         (others => '0');
 
@@ -81,6 +83,7 @@ begin
         '0' when instrJ = '1' and func = "000" else -- jmp
         '0' when instrR = '1' and func = "000" else -- add
         '0' when instrR = '1' and func = "001" else -- sub
+        '0' when instrR = '1' and func = "010" else -- move
         '0' when instrI = '1' and func = "000" else -- addi
         '0' when instrI = '1' and func = "001" else -- ld
         '1';

@@ -86,7 +86,7 @@ begin
         wrEn => regWrt,
         wrData => wrtData,
         wrAddress => wrAddress,
-        r0Address => instruction(11 downto 9),
+        r0Address => r0Address,
         r1Address => instruction(8 downto 6),
         r0Data => r0Ula,
         r1Data => r1Ula
