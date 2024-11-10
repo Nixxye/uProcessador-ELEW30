@@ -31,7 +31,7 @@ begin
     );
     -- Coloca o registrador ZERO na ULA para ter mais bits para a constante do jump:
     -- Usado também para quando é necessário somar com zero (apenas passar a constante pela ULA):
-    zeroReg <= '1' when state = "000" and instrJ = '1' else  -- jump
+    zeroReg <= '1' when state = "010" and instrJ = '1' else  -- jump
         '1' when state = "010" and instrI = '1' and func = "000" else -- ld
         '1' when state = "010" and instrR = '1' and func = "010" else -- move
         '0';
