@@ -14,8 +14,8 @@ Para executar o projeto, você precisará de:
 
 Para compilar e simular o microprocessador, basta abrir o terminal no diretório do projeto e digitar `make`. 
 
-## Instruções aplicadas:
-Os bits mais significativos estão à esquerda.
+## Descrição das Instruções:
+O microprocessador implementa três tipos principais de instruções: Tipo J (Jump), Tipo R (Registro) e Tipo I (Imediato). Abaixo, a descrição de cada tipo de instrução e seus campos:
 ### Instruções de Tipo J
 As instruções do tipo Jump (J) são utilizadas para controlar o fluxo de execução do programa, realizando saltos para outros endereços de memória.
 | Instruções (J) | Opcode | FUNCT | Endereço ROM (11 downto 0) |
