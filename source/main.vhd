@@ -6,11 +6,9 @@ entity main is
     port(
         clk, rst : in std_logic;
         opSelect : out unsigned(3 downto 0);
-        -- wrAddress : in unsigned(2 downto 0);
         wrData : in unsigned(15 downto 0);
         z, n, v, opException : out std_logic;
-        result, PC : out unsigned(15 downto 0);
-        romOut : out unsigned(18 downto 0)
+        result, PC : out unsigned(15 downto 0)
     );
 end entity;
 
@@ -41,6 +39,14 @@ architecture a_main of main is
         );
     end component;
 
+    component reg19 is
+        port(
+            clk, rst, wrEn : in std_logic;
+            dataIn : in unsigned(18 downto 0);
+            dataOut : out unsigned(18 downto 0)
+        );
+    end component;
+
     component ROM is
     port (
         clk : in std_logic;
@@ -53,17 +59,17 @@ architecture a_main of main is
         port (
             clk, rst : in std_logic;
             instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt : out std_logic;
+            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt : out std_logic;
             ulaOp : out unsigned(3 downto 0); 
-            ulaSrcB : out unsigned(1 downto 0)
+            ulaSrcB, lorD : out unsigned(1 downto 0)
         );
     end component;
-    signal ulaA, ulaB, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut: unsigned(15 downto 0);
-    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, regWrt, rstPc : std_logic;
-    signal sUlaB : unsigned(1 downto 0);
+    signal ulaA, ulaB, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut, romAddr: unsigned(15 downto 0);
+    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, regWrt, rstPc, irWrt : std_logic;
+    signal sUlaB, lorD : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
     signal r0Address, wrAddress : unsigned(2 downto 0);
-    signal instruction : unsigned(18 downto 0);
+    signal instruction, romOut : unsigned(18 downto 0);
 begin
     ulat : ULA port map(
         dataInA => ulaA,
@@ -87,8 +93,8 @@ begin
     );
     romMem : ROM port map(
         clk => clk,
-        address => pcOut,
-        data => instruction
+        address => romAddr,
+        data => romOut
     );
     -- kk
     cU : controlUnit port map(
@@ -104,11 +110,13 @@ begin
         opException => excp,
         zeroReg => zeroReg,
         memtoReg => memtoReg,
-        regWrt => regWrt
+        regWrt => regWrt,
+        irWrt => irWrt,
+        lorD => lorD
     );
     pcReg : reg16 port map(
         clk => clk,
-        rst => rstPc,
+        rst => rst,
         wrEn => pcWrt,
         dataIn => pcIn,
         dataOut => pcOut
@@ -120,9 +128,20 @@ begin
         dataIn => ulaResult,
         dataOut => ulaOut
     );
+    instrReg : reg19 port map(
+        clk => clk,
+        rst => rst,
+        wrEn => irWrt,
+        dataIn => romOut,
+        dataOut => instruction
+    );
     -- registrador a ser escrito no banco (TALVEZ VIRE UM MUX):
     wrAddress <= instruction(11 downto 9);
     -- MUX
+    romAddr <= pcOut when lorD = "00" else 
+        ulaOut when lorD = "01" else
+        ulaResult when lorD = "10" else
+        (others => '0'); -- JUMP
     ulaA <= pcOut when sUlaA = '0' else
             r0Ula when sUlaA = '1' else
             (others => '0');
@@ -145,13 +164,6 @@ begin
     result <= ulaOut;
     PC <= pcOut;
     opSelect <= ulaOp;
-    romOut <= instruction;
+    -- instruction <= romOut;
     opException <= excp;
-    -- ADD ff para que o pc execute a instrução zero após o reset:
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            rstPc <= rst;
-        end if;
-    end process;
 end architecture;

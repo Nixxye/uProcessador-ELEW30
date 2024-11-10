@@ -6,9 +6,9 @@ entity controlUnit is
     port (
         clk, rst : in std_logic;
         instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-        pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt: out std_logic;
+        pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt: out std_logic;
         ulaOp : out unsigned(3 downto 0); 
-        ulaSrcB : out unsigned(1 downto 0)
+        ulaSrcB, lorD : out unsigned(1 downto 0)
     );
 end entity;
 
@@ -31,12 +31,13 @@ begin
     );
     -- Coloca o registrador ZERO na ULA para ter mais bits para a constante do jump:
     -- Usado também para quando é necessário somar com zero (apenas passar a constante pela ULA):
-    zeroReg <= '1' when state = "010" and instrJ = '1' else  -- jump
+    zeroReg <= '1' when state = "000" and instrJ = '1' else  -- jump
         '1' when state = "010" and instrI = '1' and func = "000" else -- ld
         '0';
 
     ulaOp <= "0000" when state = "000" else 
         "0000" when state = "001" else
+        "0000" when state = "010" and instrJ = '1' else
         "0000" when state = "010" and instrR = '1' and func = "0000" else
         "0001" when state = "010" and instrR = '1' and func = "0001" else
         "0000" when state = "010" and instrI = '1' and func = "0000" else
@@ -59,7 +60,10 @@ begin
     pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
     pcWrtCnd <= '1' when state = "010" and instrJ = '1' else '0';
     pcSource <= '0' when state = "000" else
-        '0' when state = "010" and instrJ = '1' else -- Olhar para o opcode dps
+        '0' when state = "010" and instrJ = '1' else
+        '0';
+    
+    irWrt <= '1' when state = "000" else 
         '0';
     
     memtoReg <= '0' when instrR = '1' and state = "011" else
@@ -68,6 +72,7 @@ begin
         '0';
     regWrt <= '1' when instrR = '1' and state = "011" else
         '1' when instrI = '1' and state = "011" else '0';
+    lorD <= "10" when instrJ = '1' and state = "010" else "00";
     -- DECODE:
     opcode <= instruction (6 downto 3);
     func <= instruction (2 downto 0);

@@ -1,0 +1,49 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Nov 10 00:35:11 2024
+[*]
+[dumpfile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/work/tb.vcd"
+[dumpfile_mtime] "Sun Nov 10 00:34:10 2024"
+[dumpfile_size] 42472
+[savefile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/testbench/jmp.gtkw"
+[timestart] 0
+[size] 2548 987
+[pos] -1217 -187
+*-27.608255 1175000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.uut.
+[sst_width] 214
+[signals_width] 327
+[sst_expanded] 1
+[sst_vpaned_height] 606
+@28
+tb.clk
+tb.uut.lord[1:0]
+@22
+tb.pc[15:0]
+@23
+tb.uut.rommem.address[15:0]
+@28
+tb.uut.romout[18:0]
+tb.uut.instruction[18:0]
+tb.uut.cu.state[2:0]
+tb.uut.regfile.wren
+@24
+tb.uut.regfile.rs0[15:0]
+tb.uut.regfile.rs1[15:0]
+tb.uut.regfile.rs2[15:0]
+tb.uut.regfile.rs3[15:0]
+tb.uut.regfile.rs4[15:0]
+@28
+tb.uut.cu.instri
+tb.uut.irwrt
+tb.uut.pcwrt
+tb.uut.cu.instrj
+tb.uut.cu.instrr
+@22
+tb.uut.ulaa[15:0]
+tb.uut.ulab[15:0]
+tb.uut.ulaout[15:0]
+tb.uut.ularesult[15:0]
+[pattern_trace] 1
+[pattern_trace] 0

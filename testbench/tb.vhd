@@ -11,8 +11,7 @@ architecture a_tb of tb is
         clk, rst: in std_logic;
         opSelect : out unsigned(3 downto 0);
         z, n, v, opException : out std_logic;
-        result, PC : out unsigned(15 downto 0);
-        romOut : out unsigned(18 downto 0)
+        result, PC : out unsigned(15 downto 0)
     );
    end component;
    signal wrData, out_a, pc : unsigned (15 downto 0);
@@ -32,7 +31,6 @@ begin
         n => n,
         v => v,
         result => out_a,
-        romOut => rom,
         PC => pc,
         opException => excp
     );
