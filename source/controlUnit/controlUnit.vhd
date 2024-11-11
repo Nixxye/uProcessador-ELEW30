@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity controlUnit is
     port (
-        clk, rst : in std_logic;
+        clk, rst, z, n, v : in std_logic;
         instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
         pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt: out std_logic;
         ulaOp : out unsigned(3 downto 0); 
@@ -22,7 +22,7 @@ architecture a_controlUnit of controlUnit is
 
     signal opcode : unsigned(3 downto 0);
     signal func, state : unsigned(2 downto 0);
-    signal excp, stRst, instrR, instrJ, instrI: std_logic;
+    signal excp, jmp, stRst, instrR, instrJ, instrI: std_logic;
 begin
     sM : stateMachine port map(
         clk => clk,
@@ -39,6 +39,7 @@ begin
     ulaOp <= "0000" when state = "000" else 
         "0000" when state = "001" else
         "0000" when state = "010" and instrJ = '1' else
+        "0001" when state = "010" and instrB = '1' else
         "0000" when state = "010" and instrR = '1' and func = "0000" else
         "0001" when state = "010" and instrR = '1' and func = "0001" else
         "0000" when state = "010" and instrR = '1' and func = "0010" else
@@ -50,6 +51,7 @@ begin
         '1' when state = "010" and instrR = '1' else
         '1' when state = "010" and instrI = '1' else
         '1' when state = "010" and instrJ = '1' else
+        '1' when state = "010" and instrB = '1' else
         '0';
 
     ulaSrcB <= "01" when state = "000" else
@@ -57,12 +59,16 @@ begin
         "11" when state = "010" and instrJ = '1' else
         "00" when state = "010" and instrR = '1' else
         "10" when state = "010" and instrI = '1' else
+        "00" when state = "010" and instrB = '1' else
         "00";
         
     pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
-    pcWrtCnd <= '1' when state = "010" and instrJ = '1' else '0';
+    pcWrtCnd <= '1' when state = "010" and instrJ = '1' else
+        '1' when state = "010" and instrB = '1' and jmp else
+        '0';
     pcSource <= '0' when state = "000" else
         '0' when state = "010" and instrJ = '1' else
+        '1' when state = "010" and instrB = '1' else
         '0';
     
     irWrt <= '1' when state = "000" else 
@@ -86,6 +92,8 @@ begin
         '0' when instrR = '1' and func = "010" else -- move
         '0' when instrI = '1' and func = "000" else -- addi
         '0' when instrI = '1' and func = "001" else -- ld
+        '0' when instrB = '1' and func = "000" else -- ble
+        '0' when instrB = '1' and func = "001" else -- blt
         '1';
     -- RESETA A MÁQUINA DE ESTADOS EM DIFERENTES POSIÇÕES DEPENDENDO DO OPCODE
     stRst <= '1' when rst = '1' else
@@ -97,5 +105,11 @@ begin
     instrR <= '1' when opcode = "0010" else '0';
     instrJ <= '1' when opcode = "0001" else '0';
     instrI <= '1' when opcode = "0011" else '0';
+    instrB <= '1' when opcode = "0100" else '0';
+
     opException <= excp;
+    -- PULOS:
+    jmp <= (instrB = '1' and func = "000" and (z = '1' or n != v)) or -- BLE
+        (instrB = '1' and func = "001" and (n != v));
+
 end architecture;
