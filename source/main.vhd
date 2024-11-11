@@ -145,10 +145,13 @@ begin
     ulaA <= pcOut when sUlaA = '0' else
             r0Ula when sUlaA = '1' else
             (others => '0');
+    -- linhas copiadas para extensão de sinal:
     ulaB <= r1Ula when sUlaB = "00" else
         "0000000000000001" when sUlaB = "01" else
-        "0000000" & instruction(8 downto 0) when sUlaB = "10" else
-        "0000" & instruction(11 downto 0) when sUlaB = "11" else -- Apenas para Jump
+        "0000000" & instruction(8 downto 0) when sUlaB = "10" and instruction(8) = '0' else
+        "1111111" & instruction(8 downto 0) when sUlaB = "10" and instruction(8) = '1' else
+        "0000" & instruction(11 downto 0) when sUlaB = "11" and instruction(11) = '0' else -- Apenas para Jump
+        "1111" & instruction(11 downto 0) when sUlaB = "11" and instruction(11) = '1' else -- Apenas para Jump
         (others => '0');
     pcIn <= ulaResult when pcSource = '0' else
             ulaOut when pcSource = '1' else
@@ -157,7 +160,8 @@ begin
             instruction(11 downto 9);
 
     wrtData <= ulaOut when memtoReg = '0' else
-        "0000000" & instruction(8 downto 0) when memtoReg = '1' else -- IMMEDIATE
+        "0000000" & instruction(8 downto 0) when memtoReg = '1' and instruction(8) = '0' else -- IMMEDIATE
+        "1111111" & instruction(8 downto 0) when memtoReg = '1' and instruction(8) = '1' else -- IMMEDIATE
         (others => '0');
     -- ATUALIZAR qnd add BEQ
     pcWrt <= pcWrtEn or pcWrtCnd;
