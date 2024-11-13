@@ -8,16 +8,18 @@ end;
 architecture a_tb of tb is
    component main 
    port(
-        clk, rst, wrEn : in std_logic;
+        clk, rst, wrEn, wrUla : in std_logic;
         opSelect : in unsigned(3 downto 0);
-        r0, r1, wrAddress, wrData : in unsigned(15 downto 0);
+        wrData : in unsigned(15 downto 0);
+        r0, r1, wrAddress : in unsigned (2 downto 0);
         z, n, v : out std_logic;
         result : out unsigned(15 downto 0)
    );
    end component;
-   signal wrAddress, wrData, r0, r1, out_a: unsigned (15 downto 0);
+   signal wrData, out_a: unsigned (15 downto 0);
+   signal r0, r1, wrAddress : unsigned (2 downto 0);
    signal inOp : unsigned (3 downto 0);
-   signal z, n, v, clk, rst, wrEn : std_logic;
+   signal z, n, v, clk, rst, wrEn, wrUla : std_logic;
 
    constant periodTime : time := 50 ns;
    signal finished : std_logic := '0';
@@ -34,7 +36,8 @@ begin
         z => z,
         n => n,
         v => v,
-        result => out_a
+        result => out_a,
+        wrUla => wrUla
     );
     resetGlobal : process
     begin
@@ -65,20 +68,43 @@ begin
     process 
     begin
         wait for periodTime * 2;
+        wrUla <= '0';
         wrEn <= '1';
-        wrAddress <= "0000000000000001";
-        wrData <= "0000000010010001";
+        wrAddress <= "001";
+        wrData <= B"0000_0000_0000_0101";
         wait for periodTime;
-        wrAddress <= "0000000000000010";
-        wrData <= "0000000010010001";
+        wrAddress <= "100";
+        wrData <= B"0000_0000_0000_0001";
+        wait for periodTime;
+        wrAddress <= "011";
+        wrData <= B"0000_0000_0000_0011";
+        wait for periodTime;
+        wrAddress <= "010";
+        wrData <= B"0000_0000_0000_0100";
         wait for periodTime;
         wrEn <= '0';
         inOp <= "0000";
-        r0 <= "0000000000000001";
-        r1 <= "0000000000000010";
+        r0 <= "001";
+        r1 <= "010";
         wait for periodTime;
         inOp <= "0001";
+        r0 <= "001";
+        r1 <= "010";
         wait for periodTime;
+        inOp <= "0010";
+        r0 <= "011";
+        r1 <= "100";
+        wait for periodTime;
+        inOp <= "0011";
+        r0 <= "000";
+        r1 <= "001";
+        wait for periodTime;
+        wrUla <= '1';
+        inOp <= "0000";
+        r0 <= "001";
+        r1 <= "010";
+        wrEn <= '1';
+        wrAddress <= "011";
         wait;
     end process;
 end architecture;

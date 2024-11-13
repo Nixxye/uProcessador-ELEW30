@@ -4,9 +4,10 @@ use ieee.numeric_std.all;
 
 entity main is 
     port(
-        clk, rst, wrEn : in std_logic;
+        clk, rst, wrEn, wrUla : in std_logic;
         opSelect : in unsigned(3 downto 0);
-        r0, r1, wrAddress, wrData : in unsigned(15 downto 0);
+        wrData : in unsigned(15 downto 0);
+        r0, r1, wrAddress : in unsigned (2 downto 0);
         z, n, v : out std_logic;
         result : out unsigned(15 downto 0)
     );
@@ -25,17 +26,10 @@ architecture a_main of main is
     component registerFile is 
         port(
             clk, rst, wrEn : in std_logic;
-            wrData, wrAddress, r0Address, r1Address: in unsigned(15 downto 0);
+            wrData : in unsigned(15 downto 0);
+            wrAddress, r0Address, r1Address : in unsigned(2 downto 0);
             r0Data, r1Data : out unsigned(15 downto 0)
         );
-    end component;
-    -- MT FEIO DEIXAR O MESMO MUX???
-    component mux16 is 
-    port (
-        op0, op1, op2, op3 : in unsigned (15 downto 0);
-        sel : in unsigned (3 downto 0);
-        muxOut : out unsigned (15 downto 0)
-    );
     end component;
 
     signal r0Ula, r1Ula, reg, ulaOut: unsigned(15 downto 0);
@@ -62,13 +56,7 @@ begin
         r1Data => r1Ula
     );
 
-    regIn : mux16 port map(
-        op0 => ulaOut,
-        op1 => wrData,
-        op2 => "0000000000000000",
-        op3 => "0000000000000000",
-        sel => "0001",
-        muxOut => reg
-    );
+    reg <= ulaOut when  wrUla = '1' else wrData;
+
     result <= ulaOut;
 end architecture;

@@ -91,6 +91,6 @@ begin
     -- FLAGS
     z <= '1' when muxOut = 0 else '0';
     n <= muxOut(15);
-    v <= (dataInA(15) and dataInB(15) and not muxOut(15))
-     or (not dataInA(15) and not dataInB(15) and muxOut(15));
+    v <= (dataInA(15) and not dataInB(15) and not muxOut(15))
+     or (not dataInA(15) and dataInB(15) and muxOut(15));
 end architecture;

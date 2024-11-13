@@ -1,0 +1,41 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Wed Nov 13 23:33:26 2024
+[*]
+[dumpfile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/work/tb.vcd"
+[dumpfile_mtime] "Wed Nov 13 23:29:28 2024"
+[dumpfile_size] 9843
+[savefile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/testbench/teste.gtkw"
+[timestart] 0
+[size] 2548 987
+[pos] -202 -105
+*-25.546856 489700000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.uut.
+[sst_width] 214
+[signals_width] 242
+[sst_expanded] 1
+[sst_vpaned_height] 547
+@28
+tb.clk
+@22
+tb.inop[3:0]
+@28
+tb.r0[2:0]
+tb.r1[2:0]
+tb.wraddress[2:0]
+@22
+tb.wrdata[15:0]
+@28
+tb.wren
+@22
+tb.uut.regfile.rs0[15:0]
+tb.uut.regfile.rs1[15:0]
+tb.uut.regfile.rs2[15:0]
+tb.uut.regfile.rs3[15:0]
+tb.uut.regfile.rs4[15:0]
+tb.uut.ulat.dataina[15:0]
+tb.uut.ulat.datainb[15:0]
+tb.out_a[15:0]
+[pattern_trace] 1
+[pattern_trace] 0
