@@ -152,6 +152,7 @@ begin
         "1111111" & instruction(8 downto 0) when sUlaB = "010" and instruction(8) = '1' else
         "0000" & instruction(11 downto 0) when sUlaB = "011" and instruction(11) = '0' else -- Apenas para Jump
         "1111" & instruction(11 downto 0) when sUlaB = "011" and instruction(11) = '1' else -- Apenas para Jump
+        -- GAMBIARRA: -1 porque o PC já avançou no estado 0:
         (B"0000_0000_00" & instruction(5 downto 0) - 1)when sUlaB = "100" and instruction(5) = '0' else -- Apenas para B
         (B"1111_1111_11" & instruction(5 downto 0) - 1) when sUlaB = "100" and instruction(5) = '1' else -- Apenas para B
         (others => '0');
