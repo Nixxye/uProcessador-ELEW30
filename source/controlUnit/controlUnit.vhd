@@ -8,7 +8,8 @@ entity controlUnit is
         instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
         pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt: out std_logic;
         ulaOp : out unsigned(3 downto 0); 
-        ulaSrcB, lorD : out unsigned(1 downto 0)
+        ulaSrcB : out unsigned(2 downto 0);
+        lorD : out unsigned(1 downto 0)
     );
 end entity;
 
@@ -22,7 +23,7 @@ architecture a_controlUnit of controlUnit is
 
     signal opcode : unsigned(3 downto 0);
     signal func, state : unsigned(2 downto 0);
-    signal excp, jmp, stRst, instrR, instrJ, instrI: std_logic;
+    signal excp, jmp, jmpBLT, jmpBLE, stRst, instrR, instrJ, instrI, instrB: std_logic;
 begin
     sM : stateMachine port map(
         clk => clk,
@@ -54,17 +55,17 @@ begin
         '1' when state = "010" and instrB = '1' else
         '0';
 
-    ulaSrcB <= "01" when state = "000" else
-        "10" when state = "001" else
-        "11" when state = "010" and instrJ = '1' else
-        "00" when state = "010" and instrR = '1' else
-        "10" when state = "010" and instrI = '1' else
-        "00" when state = "010" and instrB = '1' else
-        "00";
+    ulaSrcB <= "001" when state = "000" else
+        "100" when state = "001" else
+        "011" when state = "010" and instrJ = '1' else
+        "000" when state = "010" and instrR = '1' else
+        "010" when state = "010" and instrI = '1' else
+        "000" when state = "010" and instrB = '1' else
+        "000";
         
     pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
     pcWrtCnd <= '1' when state = "010" and instrJ = '1' else
-        '1' when state = "010" and instrB = '1' and jmp else
+        '1' when state = "010" and instrB = '1' and jmp = '1' else
         '0';
     pcSource <= '0' when state = "000" else
         '0' when state = "010" and instrJ = '1' else
@@ -109,7 +110,8 @@ begin
 
     opException <= excp;
     -- PULOS:
-    jmp <= (instrB = '1' and func = "000" and (z = '1' or n != v)) or -- BLE
-        (instrB = '1' and func = "001" and (n != v));
-
+    jmp <= '1' when instrB = '1' and func = "000" and z = '1' else
+        '1' when instrB = '1' and func = "000" and n /= v else 
+        '1' when (instrB = '1') and (func = "001" and (n /= v)) else
+        '0';
 end architecture;

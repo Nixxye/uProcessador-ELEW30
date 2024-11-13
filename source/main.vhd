@@ -4,11 +4,7 @@ use ieee.numeric_std.all;
 
 entity main is 
     port(
-        clk, rst : in std_logic;
-        opSelect : out unsigned(3 downto 0);
-        wrData : in unsigned(15 downto 0);
-        z, n, v, opException : out std_logic;
-        result, PC : out unsigned(15 downto 0)
+        clk, rst : in std_logic
     );
 end entity;
 
@@ -57,18 +53,19 @@ architecture a_main of main is
 
     component controlUnit is
         port (
-            clk, rst : in std_logic;
+            clk, rst, z, n, v : in std_logic;
             instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt : out std_logic;
+            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt: out std_logic;
             ulaOp : out unsigned(3 downto 0); 
-            ulaSrcB, lorD : out unsigned(1 downto 0)
+            ulaSrcB : out unsigned(2 downto 0);
+            lorD : out unsigned(1 downto 0)
         );
     end component;
     signal ulaA, ulaB, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut, romAddr: unsigned(15 downto 0);
-    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, regWrt, rstPc, irWrt : std_logic;
-    signal sUlaB, lorD : unsigned(1 downto 0);
+    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, regWrt, rstPc, irWrt, z, n, v : std_logic;
+    signal lorD : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
-    signal r0Address, wrAddress : unsigned(2 downto 0);
+    signal sUlaB, r0Address, wrAddress : unsigned(2 downto 0);
     signal instruction, romOut : unsigned(18 downto 0);
 begin
     ulat : ULA port map(
@@ -112,7 +109,10 @@ begin
         memtoReg => memtoReg,
         regWrt => regWrt,
         irWrt => irWrt,
-        lorD => lorD
+        lorD => lorD,
+        z => z,
+        n => n,
+        v => v
     );
     pcReg : reg16 port map(
         clk => clk,
@@ -146,12 +146,14 @@ begin
             r0Ula when sUlaA = '1' else
             (others => '0');
     -- linhas copiadas para extensão de sinal:
-    ulaB <= r1Ula when sUlaB = "00" else
-        "0000000000000001" when sUlaB = "01" else
-        "0000000" & instruction(8 downto 0) when sUlaB = "10" and instruction(8) = '0' else
-        "1111111" & instruction(8 downto 0) when sUlaB = "10" and instruction(8) = '1' else
-        "0000" & instruction(11 downto 0) when sUlaB = "11" and instruction(11) = '0' else -- Apenas para Jump
-        "1111" & instruction(11 downto 0) when sUlaB = "11" and instruction(11) = '1' else -- Apenas para Jump
+    ulaB <= r1Ula when sUlaB = "000" else
+        "0000000000000001" when sUlaB = "001" else
+        "0000000" & instruction(8 downto 0) when sUlaB = "010" and instruction(8) = '0' else
+        "1111111" & instruction(8 downto 0) when sUlaB = "010" and instruction(8) = '1' else
+        "0000" & instruction(11 downto 0) when sUlaB = "011" and instruction(11) = '0' else -- Apenas para Jump
+        "1111" & instruction(11 downto 0) when sUlaB = "011" and instruction(11) = '1' else -- Apenas para Jump
+        B"0000_0000_00" & instruction(5 downto 0) when sUlaB = "100" and instruction(5) = '0' else -- Apenas para B
+        B"1111_1111_11" & instruction(5 downto 0) when sUlaB = "100" and instruction(5) = '1' else -- Apenas para B
         (others => '0');
     pcIn <= ulaResult when pcSource = '0' else
             ulaOut when pcSource = '1' else
@@ -165,9 +167,4 @@ begin
         (others => '0');
     -- ATUALIZAR qnd add BEQ
     pcWrt <= pcWrtEn or pcWrtCnd;
-    result <= ulaOut;
-    PC <= pcOut;
-    opSelect <= ulaOp;
-    -- instruction <= romOut;
-    opException <= excp;
 end architecture;
