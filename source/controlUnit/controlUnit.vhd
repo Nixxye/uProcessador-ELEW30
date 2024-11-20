@@ -65,7 +65,7 @@ begin
         '0' when state = "010" and instrJ = '1' else
         '0';
     
-    irWrt <= '1' when state = "000" else 
+    irWrt <= '1' when state = "000" and excp = '0' else 
         '0';
     
     memtoReg <= '0' when instrR = '1' and state = "011" else
