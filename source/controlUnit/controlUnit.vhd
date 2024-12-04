@@ -33,7 +33,6 @@ begin
     -- Coloca o registrador ZERO na ULA para ter mais bits para a constante do jump:
     -- Usado também para quando é necessário somar com zero (apenas passar a constante pela ULA):
     zeroReg <= '1' when state = "010" and instrJ = '1' else  -- jump
-        '1' when state = "010" and instrB = '1' else  -- jump
         '1' when state = "010" and instrI = '1' and func = "001" else -- ld
         '1' when state = "010" and instrR = '1' and func = "010" else -- move
         '0';
@@ -63,7 +62,7 @@ begin
         "011" when state = "010" and instrJ = '1' else
         "000" when state = "010" and instrR = '1' else
         "010" when state = "010" and instrI = '1' else
-        "001" when state = "010" and instrB = '1' else
+        "010" when state = "010" and instrB = '1' else
         "000";
         
     pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
@@ -72,7 +71,7 @@ begin
         '0';
     pcSource <= '0' when state = "000" else
         '0' when state = "010" and instrJ = '1' else
-        '1' when state = "010" and instrB = '1' else
+        '0' when state = "010" and instrB = '1' else
         '0';
     
     irWrt <= '1' when state = "000" else 
@@ -82,9 +81,11 @@ begin
         '1' when instrI = '1' and func = "001" and state = "011" else --ld
         '0' when instrI = '1' and func = "000" and state = "011" else --addi
         '0';
-    regWrt <= '1' when instrR = '1' and state = "011" else
-        '1' when instrI = '1' and state = "011" else '0';
-    lorD <= "10" when instrJ = '1' and state = "010" else "00";
+    regWrt <= '1' when instrR = '1' and state = "011" and func /= "011" else
+        '1' when instrI = '1' and state = "011" and func /= "010" else '0';
+    lorD <= "10" when instrJ = '1' and state = "010" else
+        "10" when instrB = '1' and state = "010" else
+        "00";
     -- DECODE:
     opcode <= instruction (6 downto 3);
     func <= instruction (2 downto 0);
@@ -120,5 +121,5 @@ begin
         '1' when (instrB = '1') and (func = "001" and (n /= v)) else
         '0';
 
-    flagWrtEn <= '0' when state = "000" or instrJ = '1' or instrB = '1' else '1';
+    flagWrtEn <= '0' when state = "000" or state = "011" or instrJ = '1' or instrB = '1' else '1';
 end architecture;

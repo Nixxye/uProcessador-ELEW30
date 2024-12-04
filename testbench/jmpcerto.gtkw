@@ -1,26 +1,28 @@
 [*]
-[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Wed Nov 13 01:25:15 2024
+[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
+[*] Wed Dec  4 00:49:42 2024
 [*]
-[dumpfile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/work/tb.vcd"
-[dumpfile_mtime] "Wed Nov 13 01:22:46 2024"
-[dumpfile_size] 46498
-[savefile] "/mnt/c/Users/cjean/OneDrive/Desktop/myMEMMO/uProcessador-ELEW30/testbench/jmpcerto.gtkw"
-[timestart] 0
-[size] 2548 987
-[pos] -58 -239
-*-27.520229 965300000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[dumpfile] "/home/nix/Documents/GitHub/uProcessador-ELEW30/work/tb.vcd"
+[dumpfile_mtime] "Wed Dec  4 00:47:36 2024"
+[dumpfile_size] 249865
+[savefile] "/home/nix/Documents/GitHub/uProcessador-ELEW30/testbench/jmpcerto.gtkw"
+[timestart] 1221100000
+[size] 1670 1001
+[pos] -7 -4
+*-26.183025 1365400000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
-[treeopen] tb.uut.cu.
-[sst_width] 214
+[treeopen] tb.uut.ulat.
+[sst_width] 273
 [signals_width] 204
 [sst_expanded] 1
-[sst_vpaned_height] 606
+[sst_vpaned_height] 644
 @28
 tb.clk
 @24
 tb.uut.pcout[15:0]
+@22
+tb.uut.pcin[15:0]
 @28
 tb.uut.instruction[18:0]
 tb.uut.cu.state[2:0]
@@ -32,9 +34,6 @@ tb.uut.regfile.rs3[15:0]
 tb.uut.regfile.rs4[15:0]
 @28
 tb.uut.cu.instrb
-tb.uut.ulat.n
-tb.uut.ulat.v
-tb.uut.ulat.z
 @24
 tb.uut.ulat.dataina[15:0]
 @28
@@ -46,8 +45,16 @@ tb.uut.cu.jmp
 tb.uut.regfile.wren
 @22
 tb.uut.regfile.wrdata[15:0]
-@25
+@24
 tb.uut.ulat.dataina[15:0]
 tb.uut.ulat.datainb[15:0]
+@28
+tb.uut.cu.n
+tb.uut.cu.v
+tb.uut.cu.z
+tb.uut.cu.flagwrten
+tb.uut.ulat.n
+tb.uut.ulat.v
+tb.uut.ulat.z
 [pattern_trace] 1
 [pattern_trace] 0
