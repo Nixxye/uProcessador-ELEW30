@@ -31,16 +31,31 @@ As instruções do tipo R envolvem operações aritméticas ou lógicas entre re
 | ADD            | 0010   | 000   |                  |                 |
 | SUB            | 0010   | 001   |                  |                 |
 | MOV            | 0010   | 010   |                  |                 |
+| CMP            | 0010   | 011   |                  |                 |
 * Opcode: Código da operação (4 bits).
 * FUNCT: Função específica da operação (3 bits).
 * R0 e R1: Registradores envolvidos na operação (3 bits cada).
+* CMP: Apenas para comparações, não altera nenhum registrador.
 ### Instruções de Tipo I
 As instruções do tipo I são usadas para operações que envolvem imediatos, como adições com valores constantes ou carregamento de dados.
 | Instruções (I) | Opcode | FUNCT | R0 (11 downto 9) | CTE (8 downto 0) |
 |----------------|--------|-------|------------------|------------------|
 | ADDI           | 0011   | 000   |                  |                  |
 | LD             | 0011   | 001   |                  |                  |
+| CMPI           | 0011   | 010   |                  |                  |
 * Opcode: Código da operação (4 bits).
 * FUNCT: Função associada à operação (3 bits).
 * R0: Registrador envolvido na operação (3 bits).
 * CTE: Valor constante a ser utilizado na operação (9 bits).
+* CMPI: Apenas para comparações, não altera nenhum registrador.
+### Instruções de Tipo B
+As instruções do tipo B são usadas para saltos condicionais, baseados em comparações entre valores. Elas alteram o fluxo do programa se a condição especificada for verdadeira.
+| Instruções (I) | Opcode | FUNCT | DELTA (8 downto 0) |
+|----------------|--------|-------|--------------------|
+| BLE            | 0100   | 000   |                    |
+| BLT            | 0100   | 001   |                    |    
+* Opcode: Código da operação (4 bits).
+* FUNCT: Função associada à operação (3 bits).
+* DELTA: Deslocamento para o endereço de destino (9 bits), que deve ser decrementado em 1 (ex: para um delta de 3, utilizar o valor 2).
+* BLE: Salta se o valor de primeiro operando for menor ou igual ao de segundo na última comparação.
+* BLT: Salta se o valor de primeiro operando for menor do que o segundo na última comparação.
