@@ -6,7 +6,7 @@ entity controlUnit is
     port (
         clk, rst, z, n, v : in std_logic;
         instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-        pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt: out std_logic;
+        pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt, flagWrtEn: out std_logic;
         ulaOp : out unsigned(3 downto 0); 
         ulaSrcB : out unsigned(2 downto 0);
         lorD : out unsigned(1 downto 0)
@@ -33,6 +33,7 @@ begin
     -- Coloca o registrador ZERO na ULA para ter mais bits para a constante do jump:
     -- Usado também para quando é necessário somar com zero (apenas passar a constante pela ULA):
     zeroReg <= '1' when state = "010" and instrJ = '1' else  -- jump
+        '1' when state = "010" and instrB = '1' else  -- jump
         '1' when state = "010" and instrI = '1' and func = "001" else -- ld
         '1' when state = "010" and instrR = '1' and func = "010" else -- move
         '0';
@@ -40,11 +41,13 @@ begin
     ulaOp <= "0000" when state = "000" else 
         "0000" when state = "001" else
         "0000" when state = "010" and instrJ = '1' else
-        "0001" when state = "010" and instrB = '1' else
-        "0000" when state = "010" and instrR = '1' and func = "0000" else
-        "0001" when state = "010" and instrR = '1' and func = "0001" else
-        "0000" when state = "010" and instrR = '1' and func = "0010" else
-        "0000" when state = "010" and instrI = '1' and func = "0000" else
+        "0000" when state = "010" and instrB = '1' else
+        "0000" when state = "010" and instrR = '1' and func = "000" else
+        "0001" when state = "010" and instrR = '1' and func = "001" else
+        "0000" when state = "010" and instrR = '1' and func = "010" else
+        "0001" when state = "010" and instrR = '1' and func = "011" else
+        "0000" when state = "010" and instrI = '1' and func = "000" else
+        "0001" when state = "010" and instrI = '1' and func = "010" else
         (others => '0');
 
     ulaSrcA <= '0' when state = "000" else
@@ -52,7 +55,7 @@ begin
         '1' when state = "010" and instrR = '1' else
         '1' when state = "010" and instrI = '1' else
         '1' when state = "010" and instrJ = '1' else
-        '1' when state = "010" and instrB = '1' else
+        '0' when state = "010" and instrB = '1' else
         '0';
 
     ulaSrcB <= "001" when state = "000" else
@@ -60,7 +63,7 @@ begin
         "011" when state = "010" and instrJ = '1' else
         "000" when state = "010" and instrR = '1' else
         "010" when state = "010" and instrI = '1' else
-        "000" when state = "010" and instrB = '1' else
+        "001" when state = "010" and instrB = '1' else
         "000";
         
     pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
@@ -91,8 +94,10 @@ begin
         '0' when instrR = '1' and func = "000" else -- add
         '0' when instrR = '1' and func = "001" else -- sub
         '0' when instrR = '1' and func = "010" else -- move
+        '0' when instrR = '1' and func = "011" else -- cmp
         '0' when instrI = '1' and func = "000" else -- addi
         '0' when instrI = '1' and func = "001" else -- ld
+        '0' when instrI = '1' and func = "010" else -- cmpi
         '0' when instrB = '1' and func = "000" else -- ble
         '0' when instrB = '1' and func = "001" else -- blt
         '1';
@@ -114,4 +119,6 @@ begin
         '1' when instrB = '1' and func = "000" and n /= v else 
         '1' when (instrB = '1') and (func = "001" and (n /= v)) else
         '0';
+
+    flagWrtEn <= '0' when state = "000" or instrJ = '1' or instrB = '1' else '1';
 end architecture;

@@ -55,14 +55,14 @@ architecture a_main of main is
         port (
             clk, rst, z, n, v : in std_logic;
             instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt: out std_logic;
+            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt, flagWrtEn: out std_logic;
             ulaOp : out unsigned(3 downto 0); 
             ulaSrcB : out unsigned(2 downto 0);
             lorD : out unsigned(1 downto 0)
         );
     end component;
     signal ulaA, ulaB, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut, romAddr: unsigned(15 downto 0);
-    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, regWrt, rstPc, irWrt, z, n, v : std_logic;
+    signal pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, memtoReg, regWrt, rstPc, irWrt, z, n, v, zUla, nUla, vUla, flagWrtEn : std_logic;
     signal lorD : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
     signal sUlaB, r0Address, wrAddress : unsigned(2 downto 0);
@@ -73,9 +73,9 @@ begin
         dataInB => ulaB,
         opSelect => ulaOp,
         dataOut => ulaResult,
-        z => z,
-        n => n,
-        v => v
+        z => zUla,
+        n => nUla,
+        v => vUla
     );
     regFile : registerFile port map(
         clk => clk,
@@ -110,6 +110,7 @@ begin
         regWrt => regWrt,
         irWrt => irWrt,
         lorD => lorD,
+        flagWrtEn => flagWrtEn,
         z => z,
         n => n,
         v => v
@@ -152,9 +153,6 @@ begin
         "1111111" & instruction(8 downto 0) when sUlaB = "010" and instruction(8) = '1' else
         "0000" & instruction(11 downto 0) when sUlaB = "011" and instruction(11) = '0' else -- Apenas para Jump
         "1111" & instruction(11 downto 0) when sUlaB = "011" and instruction(11) = '1' else -- Apenas para Jump
-        -- GAMBIARRA: -1 porque o PC já avançou no estado 0:
-        (B"0000_0000_00" & instruction(5 downto 0) - 1)when sUlaB = "100" and instruction(5) = '0' else -- Apenas para B
-        (B"1111_1111_11" & instruction(5 downto 0) - 1) when sUlaB = "100" and instruction(5) = '1' else -- Apenas para B
         (others => '0');
     pcIn <= ulaResult when pcSource = '0' else
             ulaOut when pcSource = '1' else
@@ -168,4 +166,16 @@ begin
         (others => '0');
     -- ATUALIZAR qnd add BEQ
     pcWrt <= pcWrtEn or pcWrtCnd;
+
+    -- ff das flags atualizados apenas em instruções da ULA (tudo menos pc)
+    process (clk)
+    begin
+        if rising_edge(clk) then
+            if flagWrtEn = '1' then
+                z <= zUla;
+                v <= vUla;
+                n <= nUla;
+            end if;
+        end if;
+    end process;
 end architecture;
