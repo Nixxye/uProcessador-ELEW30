@@ -78,7 +78,7 @@ begin
         '0';
     
     memtoReg <= '0' when instrR = '1' and state = "011" else
-        '1' when instrI = '1' and func = "001" and state = "011" else --ld
+        '1' when instrI = '1' and func = "001" and state = "011" else --ld sem somar
         '0' when instrI = '1' and func = "000" and state = "011" else --addi
         '0';
     regWrt <= '1' when instrR = '1' and state = "011" and func /= "011" else
