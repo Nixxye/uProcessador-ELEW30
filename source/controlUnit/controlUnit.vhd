@@ -62,7 +62,7 @@ begin
         "011" when state = "010" and instrJ = '1' else
         "000" when state = "010" and instrR = '1' else
         "010" when state = "010" and instrI = '1' else
-        "010" when state = "010" and instrB = '1' else
+        "011" when state = "010" and instrB = '1' else
         "000";
         
     pcWrtEn <= '1' when state = "000" and excp = '0' else '0';
@@ -121,5 +121,8 @@ begin
         '1' when (instrB = '1') and (func = "001" and (n /= v)) else
         '0';
 
-    flagWrtEn <= '0' when state = "000" or state = "011" or instrJ = '1' or instrB = '1' else '1';
+    flagWrtEn <= '0' when state = "000" or state = "011" else 
+    '1' when instrR = '1' else
+    '1' when instrI = '1' and func /= "001" else -- Tudo I menos LD
+    '0';
 end architecture;
